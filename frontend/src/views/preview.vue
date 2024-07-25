@@ -1,20 +1,13 @@
 <template>
-  <div class="">
-    <el-radio-group v-model="radio">
-      <el-radio label="图片" value="image" />
-      <el-radio label="word" value="word" />
-      <el-radio label="excel" value="excel" />
-      <el-radio label="pdf" value="pdf" />
-    </el-radio-group>
-    <el-divider />
-    <PreviewImage v-if="radio === 'image'" :images="images" />
+  <div class="upload-container">
+    <UploadFile filename="测试.doc" />
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
-const radio = ref("image");
-// 图片预览
-import PreviewImage from "@/components/PreviewImage.vue";
-const images = [new URL("@/assets/lufei.jpg", import.meta.url).href];
+import UploadFile from "@/components/UploadFile.vue";
 </script>
-<style scoped></style>
+<style scoped>
+.upload-container {
+  width: 800px;
+}
+</style>

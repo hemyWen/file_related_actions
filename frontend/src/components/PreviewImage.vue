@@ -8,15 +8,11 @@
 </template>
 <!-- Options API -->
 <script lang="ts" setup>
-interface Props {
-  width?: string;
-  height?: string;
-  images: string[];
-}
+import { PreviewImageProps } from "@/types/propTypes";
 import "viewerjs/dist/viewer.css";
 import { component as Viewer } from "v-viewer";
 import { ref } from "vue";
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<PreviewImageProps>(), {
   width: "100",
   height: "100",
   images: () => [],

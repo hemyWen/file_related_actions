@@ -2,10 +2,16 @@
   <div class="container">
     <el-menu default-active="1" class="el-menu-vertical-demo" router>
       <el-menu-item index="preview">
-        <template #title> 文件预览 </template>
+        <template #title> 文件预览上传 </template>
       </el-menu-item>
       <el-menu-item index="upload">
         <template #title> 大文件上传 </template>
+      </el-menu-item>
+      <el-menu-item index="export-import">
+        <template #title> 导入导出 </template>
+      </el-menu-item>
+      <el-menu-item index="print">
+        <template #title> 打印 </template>
       </el-menu-item>
     </el-menu>
     <div class="right-container"><RouterView /></div>
