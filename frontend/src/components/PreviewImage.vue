@@ -15,15 +15,13 @@ interface Props {
 }
 import "viewerjs/dist/viewer.css";
 import { component as Viewer } from "v-viewer";
+import { ref } from "vue";
 const props = withDefaults(defineProps<Props>(), {
   width: "100",
   height: "100",
   images: () => [],
 });
-const style = {
-  width: props.width + "px",
-  height: props.height + "px",
-};
+const style = ref({ width: props.width + "px", height: props.height + "px" });
 </script>
 <style scoped>
 .image {
