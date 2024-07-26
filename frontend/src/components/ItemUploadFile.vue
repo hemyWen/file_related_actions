@@ -4,7 +4,11 @@
     <span class="filename">{{ props.file.name }}</span>
     <span class="other"></span>
     <div class="operation">
-      <PreviewWord :file="file" />
+      <PreviewWord v-if="fileType === 'word'" :file="file" />
+      <PreviewExcel v-if="fileType === 'excel'" :url="fileUrl" />
+      <PreviewPdf v-if="fileType === 'pdf'" :url="fileUrl" />
+      <PreviewAudio v-if="fileType === 'mp3'" :file="fileUrl" />
+      <PreviewVideo v-if="fileType === 'video'" :file="fileUrl" />
       <el-button type="warning" size="small" style="margin-left: 10px">
         上传
       </el-button>
@@ -22,6 +26,8 @@ const props = defineProps({
     required: true,
   },
 });
+const fileUrl = URL.createObjectURL(props.file.raw as File);
+const fileType = computed(() => matchTypes(props.file.name));
 const iconName = computed(() => getIconName(matchTypes(props.file.name)));
 </script>
 <style scoped>

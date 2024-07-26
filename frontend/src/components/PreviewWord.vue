@@ -1,8 +1,10 @@
 <template>
-  <el-button type="primary" size="small" @click="onView">查看</el-button>
-  <el-dialog v-model="dialogVisible" title="预览" fullscreen>
-    <div id="preview-container"></div>
-  </el-dialog>
+  <div style="display: inline-block">
+    <el-button type="primary" size="small" @click="onView">查看</el-button>
+    <el-dialog v-model="dialogVisible" title="预览" fullscreen>
+      <div id="preview-container"></div>
+    </el-dialog>
+  </div>
 </template>
 <script setup lang="ts">
 import { UploadFile } from "element-plus";
