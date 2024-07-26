@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     ElButton: typeof import('element-plus/es')['ElButton']
+    ElDialog: typeof import('element-plus/es')['ElDialog']
     ElDivider: typeof import('element-plus/es')['ElDivider']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElMenu: typeof import('element-plus/es')['ElMenu']
@@ -19,6 +20,7 @@ declare module 'vue' {
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    ItemUploadFile: typeof import('./src/components/ItemUploadFile.vue')['default']
     PreviewImage: typeof import('./src/components/PreviewImage.vue')['default']
     PreviewWord: typeof import('./src/components/PreviewWord.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
