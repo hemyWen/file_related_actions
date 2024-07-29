@@ -1,14 +1,21 @@
 <template>
   <div class="upload-item">
-    <svg-icon :iconName="iconName"></svg-icon>
+    <PreviewImage
+      v-if="fileType === 'image'"
+      width="45"
+      height="45"
+      :images="[mUrl]"
+    />
+    <svg-icon v-else :iconName="iconName"></svg-icon>
     <span class="filename">{{ props.file.name }}</span>
     <span class="other"></span>
     <div class="operation">
       <PreviewWord v-if="fileType === 'word'" :file="file" />
       <PreviewExcel v-if="fileType === 'excel'" :url="fileUrl" />
       <PreviewPdf v-if="fileType === 'pdf'" :url="fileUrl" />
-      <PreviewAudio v-if="fileType === 'mp3'" :file="fileUrl" />
-      <PreviewVideo v-if="fileType === 'video'" :file="fileUrl" />
+      <PreviewAudio v-if="fileType === 'mp3'" :url="mUrl" />
+      <PreviewVideo v-if="fileType === 'video'" :url="fileUrl" />
+      <PreviewTxt v-if="fileType === 'txt'" :url="fileUrl" />
       <el-button type="warning" size="small" style="margin-left: 10px">
         上传
       </el-button>
@@ -17,8 +24,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, PropType } from "vue";
-import { matchTypes, getIconName } from "@/utils/tools";
+import { computed, onMounted, PropType, ref } from "vue";
+import { matchTypes, getIconName, getFileUrl } from "@/utils/tools";
 import { UploadFile } from "element-plus";
 const props = defineProps({
   file: {
@@ -26,7 +33,13 @@ const props = defineProps({
     required: true,
   },
 });
+//URL.createObjectURL和readAsDataURL都可
 const fileUrl = URL.createObjectURL(props.file.raw as File);
+const mUrl = ref("");
+onMounted(async () => {
+  mUrl.value = await getFileUrl(props.file.raw);
+});
+
 const fileType = computed(() => matchTypes(props.file.name));
 const iconName = computed(() => getIconName(matchTypes(props.file.name)));
 </script>
@@ -42,9 +55,9 @@ const iconName = computed(() => getIconName(matchTypes(props.file.name)));
   margin-left: 10px;
   width: 200px;
   display: inline-block;
-  white-space: nowrap; /*强制span不换行*/
-  overflow: hidden; /*超出宽度部分隐藏*/
-  text-overflow: ellipsis; /*超出部分以点号代替*/
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 14px;
   color: #777;
 }

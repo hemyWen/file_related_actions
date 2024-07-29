@@ -59,3 +59,13 @@ export function getIconName(filename: string): string {
     return "icon-wenjian";
   }
 }
+export function getFileUrl(file: any): Promise<any> {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = function () {
+      const result = reader.result;
+      resolve(result);
+    };
+    reader.readAsDataURL(file);
+  });
+}

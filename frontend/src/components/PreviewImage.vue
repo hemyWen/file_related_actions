@@ -6,7 +6,6 @@
     </template>
   </viewer>
 </template>
-<!-- Options API -->
 <script lang="ts" setup>
 import { PreviewImageProps } from "@/types/propTypes";
 import "viewerjs/dist/viewer.css";
