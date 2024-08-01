@@ -13,6 +13,7 @@
     "@vue-office/excel": "^1.7.11",
     "docx-preview": "^0.3.2",
     "element-plus": "^2.7.7",
+    "spark-md5": "^3.0.2",
     "v-viewer": "^3.0.13",
     "viewerjs": "^1.11.6",
     "vue": "^3.4.31",
