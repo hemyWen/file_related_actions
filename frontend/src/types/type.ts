@@ -16,3 +16,7 @@ export interface ChunkType {
   fileName: string;
   chunkIndex: number;
 }
+export interface ReturnType {
+  msg: string;
+  success: boolean;
+}

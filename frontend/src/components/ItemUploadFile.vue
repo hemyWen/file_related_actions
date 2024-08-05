@@ -22,7 +22,9 @@
   <div class="bottom">
     <HemyProgress class="progress" type="line" :percentage="percentage" :lineHeight="12" :borderRadius="6" />
     <el-button v-if="file.status === 'ready'" type="primary" link style="margin-left: 10px"> 继续 </el-button>
-    <el-button v-else-if="file.status === 'uploading'" type="primary" link style="margin-left: 10px"> 暂停 </el-button>
+    <el-button v-else-if="file.status === 'uploading'" type="primary" link style="margin-left: 10px" @click="pause">
+      暂停
+    </el-button>
     <el-button v-else-if="file.status === 'success'" type="success" link style="margin-left: 10px"> 已上传 </el-button>
   </div>
 </template>
@@ -30,7 +32,7 @@
 import { computed, onMounted, PropType, ref } from "vue";
 import { matchTypes, getIconName, getFileUrl } from "@/utils/tools";
 import { baseUrl } from "@/utils/config";
-import { UploadStatusReturn, ChunkType } from "@/types/type";
+import { UploadStatusReturn, ChunkType, ReturnType } from "@/types/type";
 import { getFileChunks } from "@/utils/upload";
 import { UploadFile, UploadRawFile } from "element-plus";
 import HemyProgress from "@hemy-progress/vue3";
@@ -69,12 +71,11 @@ const chunksCount = ref(0);
 const percentage = computed(() =>
   chunksCount.value > 0 ? Math.floor((uploadedChunksCount.value / chunksCount.value) * 100) : 0
 );
-
+const controller = new AbortController();
 //上传操作
 const onUpload = async () => {
   const fileRaw = file.raw as UploadRawFile;
   const fileMd5 = (await useWorker(fileRaw)) as string;
-
   let chunks = getFileChunks(fileRaw, fileMd5);
   chunksCount.value = chunks.length;
   const result = (await getUploadStatus(fileMd5, fileRaw.name)) as UploadStatusReturn;
@@ -95,6 +96,7 @@ const onUpload = async () => {
     }
   }
   try {
+    props.file.status = "uploading";
     await uploadChunks(chunks);
     await mergeRequest(fileMd5, file.name);
   } catch (err) {
@@ -133,7 +135,7 @@ const uploadChunks = (chunks: ChunkType[], maxRequest = 3) => {
           request();
         })
         .catch((err) => {
-          requestErrReaults.push(...(Array.isArray(err) ? err : []));
+          requestErrReaults.push(err);
           reject(requestErrReaults);
         });
     };
@@ -160,10 +162,16 @@ const uploadHandler = (chunk: ChunkType) => {
   });
 };
 // 合并分片请求
-const mergeRequest = (fileHash: string, fileName: string) => {
-  return fetch(`${baseUrl}/merge?fileHash=${fileHash}&fileName=${fileName}`, {
+const mergeRequest = async (fileHash: string, fileName: string) => {
+  const result = await fetch(`${baseUrl}/merge?fileHash=${fileHash}&fileName=${fileName}`, {
     method: "GET",
   }).then((res) => res.json());
+  if (result.success) {
+    props.file.status = "success";
+    return ElMessage.success(`${fileName}上传成功`);
+  } else {
+    return ElMessage.success(`${fileName}上传失败`);
+  }
 };
 // 验证当前文件是否上传过或上传到哪个切片
 const getUploadStatus = (fileHash: string, fileName: string) => {
@@ -172,6 +180,10 @@ const getUploadStatus = (fileHash: string, fileName: string) => {
       method: "GET",
     }).then((res) => resolve(res.json()));
   });
+};
+//暂停
+const pause = () => {
+  controller.abort();
 };
 const useWorker = (file: File) => {
   return new Promise((resolve, reject) => {

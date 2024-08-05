@@ -4,9 +4,6 @@
       <el-menu-item index="preview">
         <template #title> 文件预览上传 </template>
       </el-menu-item>
-      <el-menu-item index="upload">
-        <template #title> 大文件上传 </template>
-      </el-menu-item>
       <el-menu-item index="export-import">
         <template #title> 导入导出 </template>
       </el-menu-item>

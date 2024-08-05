@@ -15,7 +15,7 @@ export const getFileMD5 = (file: File): Promise<string> => {
   });
 };
 //获取文件的分片
-export const getFileChunks = (file: UploadRawFile, fileHash: string, chunkSize: number = 1024 * 1024) => {
+export const getFileChunks = (file: UploadRawFile, fileHash: string, chunkSize: number = 3 * 1024 * 1024) => {
   const chunks = [];
   let start = 0;
   let end;

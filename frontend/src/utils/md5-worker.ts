@@ -11,10 +11,7 @@ self.onmessage = async (e) => {
     if (chunkNum === 1) {
       await loadNext(firstFile);
     } else {
-      const endFile = file.slice(
-        (chunkNum - 1) * chunkSize,
-        (chunkNum - 1 + 1) * chunkSize
-      );
+      const endFile = file.slice((chunkNum - 1) * chunkSize, (chunkNum - 1 + 1) * chunkSize);
       await loadNext(firstFile);
       await loadNext(endFile);
     }
@@ -25,13 +22,13 @@ self.onmessage = async (e) => {
     self.postMessage({ name: "error", data: err });
     self.close();
   }
-  function loadNext(park) {
+  function loadNext(park: Blob) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsArrayBuffer(park);
       reader.onload = (e) => {
-        sparkMD5.append(e.target.result);
-        resolve();
+        sparkMD5.append(e.target?.result);
+        resolve("");
       };
       reader.onerror = (err) => {
         reject(err);
