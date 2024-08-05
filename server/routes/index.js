@@ -26,30 +26,37 @@ const upload = multer({
   },
 })
 router.post('/upload', upload.single('file'), function (req, res, next) {
-  console.log(req.body)
-  const { fileHash, chunkIndex } = req.body;
-  // 上传文件临时目录文件夹
-  let tempFileDir = path.resolve('uploadFiles', fileHash);
-  console.log(tempFileDir)
-  // 如果当前文件的临时文件夹不存在，则创建该文件夹
-  if (!fse.pathExistsSync(tempFileDir)) {
-    fse.mkdirSync(tempFileDir)
+  try {
+    const { fileHash, chunkIndex } = req.body;
+    // 上传文件临时目录文件夹
+    let tempFileDir = path.resolve('uploadFiles', fileHash);
+    console.log(tempFileDir)
+    // 如果当前文件的临时文件夹不存在，则创建该文件夹
+    if (!fse.pathExistsSync(tempFileDir)) {
+      fse.mkdirSync(tempFileDir)
+    }
+    // 如果无临时文件夹或不存在该切片，则将用户上传的切片移到临时文件夹里
+    // 如果有临时文件夹并存在该切片，则删除用户上传的切片（因为用不到了）
+    // 目标切片位置
+    const tempChunkPath = path.resolve(tempFileDir, chunkIndex);
+    // 当前切片位置（multer默认保存的位置）
+    let currentChunkPath = path.resolve(req.file.path);
+    if (!fse.existsSync(tempChunkPath)) {
+      fse.moveSync(currentChunkPath, tempChunkPath)
+    } else {
+      fse.removeSync(currentChunkPath)
+    }
+    res.send({
+      msg: '上传成功',
+      success: true
+    })
+  } catch (error) {
+    res.send({
+      msg: '上传失败',
+      success: false
+    })
   }
-  // 如果无临时文件夹或不存在该切片，则将用户上传的切片移到临时文件夹里
-  // 如果有临时文件夹并存在该切片，则删除用户上传的切片（因为用不到了）
-  // 目标切片位置
-  const tempChunkPath = path.resolve(tempFileDir, chunkIndex);
-  // 当前切片位置（multer默认保存的位置）
-  let currentChunkPath = path.resolve(req.file.path);
-  if (!fse.existsSync(tempChunkPath)) {
-    fse.moveSync(currentChunkPath, tempChunkPath)
-  } else {
-    fse.removeSync(currentChunkPath)
-  }
-  res.send({
-    msg: '上传成功',
-    success: true
-  })
+
 });
 router.get('/merge', async (req, res) => {
   const { fileHash, fileName } = req.query;
